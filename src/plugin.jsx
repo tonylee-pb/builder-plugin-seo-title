@@ -1,32 +1,34 @@
-// contents of plugin.jsx
 /** @jsx jsx */
+import React, { useState } from 'react';
 import { jsx } from '@emotion/core';
 import { Builder } from '@builder.io/react';
 
 function SeoTitleInput(props) {
-  const [text, setText] = useState("");
+  const [text, setText] = useState(props.value || '');
 
   const getStyleByLength = (length) => {
-    if (length > 50) {
+    if (length > 60) {
       return {
-        color: "#f00000", // red-700
-        backgroundColor: "#fca5a5", // red-200
+        color: "#f00000",
+        backgroundColor: "#fca5a5",
       };
-    } else if (length > 20) {
+    } else if (length >= 50) {
       return {
-        color: "#408500", // green-700
-        backgroundColor: "#c2f28c", // green-200
+        color: "#408500",
+        backgroundColor: "#c2f28c",
       };
     } else {
       return {
-        color: "#000C2C", // text-primary
-        backgroundColor: "#fafafb", // midnight-50
+        color: "#000C2C",
+        backgroundColor: "#fafafb",
       };
     }
   };
 
-  const onChange = (event) => {
-    setText(event.target.value);
+  const handleInputChange = (event) => {
+    const newValue = event.target.value;
+    setText(newValue);
+    props.onChange?.(newValue);
   };
 
   const { color, backgroundColor } = getStyleByLength(text.length);
@@ -36,7 +38,7 @@ function SeoTitleInput(props) {
       <input
         type="text"
         value={text}
-        onChange={onChange}
+        onChange={handleInputChange}
         style={{
           width: "100%",
           height: "50px",
@@ -49,16 +51,14 @@ function SeoTitleInput(props) {
         }}
         placeholder="Type here..."
       />
-
-      <p style={{ paddingLeft: "10px" }}>
-        Your text length is <span style={{ color }}>{text.length}</span>{" "}
-        characters.
+      <p style={{ paddingLeft: "10px", fontSize: "14px" }}>
+        Your title length is <span style={{ color }}>{text.length}</span> characters.
       </p>
     </>
   );
 }
 
 Builder.registerEditor({
-    name: 'MyText',
-    component: SeoTitleInput
+  name: 'SEO Title Field',
+  component: SeoTitleInput
 });
